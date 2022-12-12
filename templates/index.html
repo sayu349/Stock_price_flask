@@ -5,6 +5,20 @@
         <title>株価データ選択</title>
     </head>
     <body>
-        <h2>効率的フロンティアを求める上での銘柄を二つ選択してください。</h2>
+        <h2>効率的フロンティア生成ツール</h2>
+        <h3>効率的フロンティアを求める上での銘柄を二つ選択してください</h3>
+        <form action="/plt_efficient_frontier" method="post" enctype="multipart/form-data">
+            <p>
+                テキストボックスに企業の証券コードを入力してください<br>
+                証券コードに関しては、以下からダウンロードしてください<br>
+                [<a href="https://www.jpx.co.jp/markets/statistics-equities/misc/01.html">リンク</a>]
+            </p>
+            <h3>1つ目の企業</h3>
+            <input type="text" name="company_name_1" required>
+            <h3>2つ目の企業</h3>
+            <input type="text" name="company_name_2" required>
+            <h3>2企業の証券コードを入力して、以下の実行ボタンをクリックしてください</h3>
+            <input type="submit" value="start">
+        </form>
     </body>
 </html>
