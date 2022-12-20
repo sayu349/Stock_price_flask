@@ -79,7 +79,10 @@ def calc_stock_price():
     data[ticker] = yf.download(ticker,start='2007-1-1')['Adj Close']
     log_returns = np.log(1 + data.pct_change())
     # 現在の株価
-    data.plot(figsize=(10, 6))
+    plt.figure(figsize=(10, 6))
+    plt.plot(data)
+    plt.savefig("./templates/images/stck_price_status.png")
+
     u = log_returns.mean()
     var = log_returns.var()
     drift = u - (0.5 * var)
