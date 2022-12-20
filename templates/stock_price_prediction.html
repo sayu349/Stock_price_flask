@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>株価予測</title>
+</head>
+
+<body>
+    <h2>モンテカルロシミュレーションによる株価算定</h2>
+    <h3>銘柄に対応する証券番号を入力してください</h3>
+    <p>
+        テキストボックスに企業の証券コードを入力してください<br>
+        証券コードに関しては、以下からダウンロードしてください<br>
+        [<a href="https://www.jpx.co.jp/markets/statistics-equities/misc/01.html">リンク</a>]
+    <form action="Monte_Carlo_simulation_results" method="post" enctype="multipart/form-data">
+        <h3>予測したい株価銘柄</h3>
+        <input type="text" name="company_name" required>
+        <h3>証券コードを入力して、以下の実行ボタンを押してください</h3>
+        <input type="submit" value="start">
+    </form>
+</body>
+
+</html>

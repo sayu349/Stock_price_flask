@@ -7,7 +7,8 @@ from flask import send_file
 
 import numpy as np
 import pandas as pd
-from pandas_datareader import data as wb
+import yfinance as yf
+#from pandas_datareader import data as wb
 import matplotlib.pyplot as plt
 from scipy.stats import norm
 
@@ -19,7 +20,8 @@ def calc_efficient_frontier(company_name):
     df = pd.DataFrame()
 
     for name in company_name:
-        adj_data = wb.DataReader(name, 'yahoo',start="2009-1-1")['Adj Close']
+        #adj_data = wb.DataReader(name, 'yahoo',start="2009-1-1")['Adj Close']
+        adj_data = yf.download(name,start="2009-01-01")["Adj Close"]
         df[name] = adj_data
 
     log_returns = np.log(df / df.shift(1))
@@ -65,3 +67,36 @@ def calc_figure():
     calc_efficient_frontier(company_name_list)
     img = "img.png"
     return render_template('result.html')
+
+@app.route('/Monte_Carlo_simulation')
+def Monte_Carlo():
+    return render_template("stock_price_prediction.html")
+
+@app.route('/Monte_Carlo_simulation_results',methods=["POST"])
+def calc_stock_price():
+    ticker = request.form["company_name"] + ".T"
+    data = pd.DataFrame()
+    data[ticker] = yf.download(ticker,start='2007-1-1')['Adj Close']
+    log_returns = np.log(1 + data.pct_change())
+    # 現在の株価
+    data.plot(figsize=(10, 6))
+    u = log_returns.mean()
+    var = log_returns.var()
+    drift = u - (0.5 * var)
+    stdev = log_returns.std()
+    Z = norm.ppf(np.random.rand(10,2))
+    t_intervals = 1000 # 1000日分の計算をする　(1000行)
+    iterations = 10 # 10パターンの数値で、（10列）
+    daily_returns = np.exp(drift.values + stdev.values * norm.ppf(np.random.rand(t_intervals, iterations)))
+    S0 = data.iloc[-1]
+    price_list = np.zeros_like(daily_returns)
+    price_list[0] = S0
+
+    for t in range(1, t_intervals):
+        price_list[t] = price_list[t - 1] * daily_returns[t]
+
+    plt.figure(figsize=(10,6))
+    plt.plot(price_list)
+    plt.savefig("./templates/images/stck_price_result.png")
+
+    return render_template("stock_price_prediction_result.html")
